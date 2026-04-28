@@ -1,13 +1,16 @@
 /**
  * ASCII banners for the Arthas CLI.
  *
+ * Layout:
+ *  - Top wordmark: figlet "Arthas".
+ *  - Knight scene: three foot knights with shields (M/D/C) flanked by a mounted knight.
+ *
  * Constraints:
- *  - Default `helpBanner` is the lean wordmark printed by `--help`.
- *  - `welcomeBanner` is shown once at REPL boot; max 8 lines, 70 cols.
- *  - The crossed-swords glyph appears at most once across the whole banner.
+ *  - The crossed-swords glyph appears at most once across the whole banner (welcome tagline).
+ *  - Both banners must render legibly on a non-color terminal.
  */
 
-// 6 lines, ~52 cols. No emoji — terminals without color/UTF8 still read clean.
+// Figlet wordmark + knight scene. Used by `--help`.
 export const helpBanner = [
   "    _         _   _               ",
   "   / \\   _ __| |_| |__   __ _ ___ ",
@@ -15,15 +18,33 @@ export const helpBanner = [
   " / ___ \\| |  | |_| | | | (_| \\__ \\",
   "/_/   \\_\\_|   \\__|_| |_|\\__,_|___/",
   "",
+  " _   _   _   _+       |",
+  "/_`-'_`-'_`-'_|  \\+/  |",
+  "\\_`M'_`D'_`C'_| _<=>_ |",
+  "  `-' `-' `-' 0/ \\ / o=o",
+  "              \\/\\ ^ /`0",
+  "              | /_^_\\",
+  "              | || ||",
+  "            __|_d|_|b__",
+  "",
 ].join("\n")
 
-// 8 lines, ~66 cols. One ⚔️ in the tagline line.
+// Same scene plus a one-line tagline. Shown once at REPL boot.
 export const welcomeBanner = [
   "    _         _   _                ",
   "   / \\   _ __| |_| |__   __ _ ___  ",
   "  / _ \\ | '__| __| '_ \\ / _` / __| ",
   " / ___ \\| |  | |_| | | | (_| \\__ \\ ",
   "/_/   \\_\\_|   \\__|_| |_|\\__,_|___/ ",
+  "",
+  " _   _   _   _+       |",
+  "/_`-'_`-'_`-'_|  \\+/  |",
+  "\\_`M'_`D'_`C'_| _<=>_ |",
+  "  `-' `-' `-' 0/ \\ / o=o",
+  "              \\/\\ ^ /`0",
+  "              | /_^_\\",
+  "              | || ||",
+  "            __|_d|_|b__",
   "",
   "  ⚔  the knight-themed agent harness",
   "",
