@@ -13,7 +13,8 @@
     ".": "./src/index.ts",
     "./record": "./src/record.ts",
     "./event-log": "./src/event-log.ts",
-    "./cost-meter": "./src/cost-meter.ts"
+    "./cost-meter": "./src/cost-meter.ts",
+    "./subscriber": "./src/subscriber.ts"
   },
   "dependencies": {
     "effect": "catalog:"
