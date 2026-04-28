@@ -2,6 +2,8 @@ import z from "zod"
 import { EOL } from "os"
 import { NamedError } from "@opencode-ai/core/util/error"
 import { logo as glyphs } from "./logo"
+import { helpBanner } from "arthas-theme/logo"
+import { PALETTE } from "arthas-theme/palette"
 
 const wordmark = [
   `⠀                                ▄     `,
@@ -44,6 +46,36 @@ export function empty() {
   if (blank) return
   println("" + Style.TEXT_NORMAL)
   blank = true
+}
+
+function hexToRgb(hex: string): [number, number, number] {
+  const clean = hex.startsWith("#") ? hex.slice(1) : hex
+  const num = Number.parseInt(clean, 16)
+  return [(num >> 16) & 0xff, (num >> 8) & 0xff, num & 0xff]
+}
+
+export function arthasLogo(pad?: string) {
+  const lines = helpBanner.split("\n")
+  if (!process.stdout.isTTY && !process.stderr.isTTY) {
+    const result: string[] = []
+    for (const row of lines) {
+      if (row.length === 0) continue
+      if (pad) result.push(pad)
+      result.push(row)
+      result.push(EOL)
+    }
+    return result.join("").trimEnd()
+  }
+  const [r, g, b] = hexToRgb(PALETTE.primary)
+  const fg = `\x1b[38;2;${r};${g};${b}m`
+  const reset = "\x1b[0m"
+  const result: string[] = []
+  for (const row of lines) {
+    if (row.length === 0) continue
+    if (pad) result.push(pad)
+    result.push(fg, row, reset, EOL)
+  }
+  return result.join("").trimEnd()
 }
 
 export function logo(pad?: string) {

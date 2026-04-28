@@ -1,5 +1,7 @@
 import yargs from "yargs"
+import type { CommandModule } from "yargs"
 import { hideBin } from "yargs/helpers"
+import { aliasFor } from "arthas-theme/aliases"
 import { RunCommand } from "./cli/cmd/run"
 import { GenerateCommand } from "./cli/cmd/generate"
 import * as Log from "@opencode-ai/core/util/log"
@@ -59,11 +61,27 @@ const args = hideBin(process.argv)
 function show(out: string) {
   const text = out.trimStart()
   if (!text.startsWith("opencode ")) {
-    process.stderr.write(UI.logo() + EOL + EOL)
+    process.stderr.write(UI.arthasLogo() + EOL + EOL)
     process.stderr.write(text)
     return
   }
   process.stderr.write(out)
+}
+
+function withKnightAlias<T, U>(module: CommandModule<T, U>): CommandModule<T, U> {
+  const cmdField = module.command
+  const head = Array.isArray(cmdField) ? cmdField[0] : cmdField
+  if (!head) return module
+  const vanilla = head.split(/\s+/)[0]
+  const knight = aliasFor(vanilla)
+  if (!knight) return module
+  const existing = module.aliases
+  const aliases = existing
+    ? Array.isArray(existing)
+      ? [...existing, knight]
+      : [existing, knight]
+    : [knight]
+  return { ...module, aliases }
 }
 
 const cli = yargs(args)
@@ -154,29 +172,29 @@ const cli = yargs(args)
   })
   .usage("")
   .completion("completion", "generate shell completion script")
-  .command(AcpCommand)
-  .command(McpCommand)
-  .command(TuiThreadCommand)
-  .command(AttachCommand)
-  .command(RunCommand)
-  .command(GenerateCommand)
-  .command(DebugCommand)
-  .command(ConsoleCommand)
-  .command(ProvidersCommand)
-  .command(AgentCommand)
-  .command(UpgradeCommand)
-  .command(UninstallCommand)
-  .command(ServeCommand)
-  .command(WebCommand)
-  .command(ModelsCommand)
-  .command(StatsCommand)
-  .command(ExportCommand)
-  .command(ImportCommand)
-  .command(GithubCommand)
-  .command(PrCommand)
-  .command(SessionCommand)
-  .command(PluginCommand)
-  .command(DbCommand)
+  .command(withKnightAlias(AcpCommand))
+  .command(withKnightAlias(McpCommand))
+  .command(withKnightAlias(TuiThreadCommand))
+  .command(withKnightAlias(AttachCommand))
+  .command(withKnightAlias(RunCommand))
+  .command(withKnightAlias(GenerateCommand))
+  .command(withKnightAlias(DebugCommand))
+  .command(withKnightAlias(ConsoleCommand))
+  .command(withKnightAlias(ProvidersCommand))
+  .command(withKnightAlias(AgentCommand))
+  .command(withKnightAlias(UpgradeCommand))
+  .command(withKnightAlias(UninstallCommand))
+  .command(withKnightAlias(ServeCommand))
+  .command(withKnightAlias(WebCommand))
+  .command(withKnightAlias(ModelsCommand))
+  .command(withKnightAlias(StatsCommand))
+  .command(withKnightAlias(ExportCommand))
+  .command(withKnightAlias(ImportCommand))
+  .command(withKnightAlias(GithubCommand))
+  .command(withKnightAlias(PrCommand))
+  .command(withKnightAlias(SessionCommand))
+  .command(withKnightAlias(PluginCommand))
+  .command(withKnightAlias(DbCommand))
   .fail((msg, err) => {
     if (
       msg?.startsWith("Unknown argument") ||
