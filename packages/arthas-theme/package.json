@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "arthas-theme",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "Arthas knight-themed palette, banner art, command aliases, and branded copy. Pure constants, no runtime deps.",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./palette": "./src/palette.ts",
+    "./logo": "./src/logo.ts",
+    "./aliases": "./src/aliases.ts",
+    "./strings": "./src/strings.ts"
+  },
+  "devDependencies": {
+    "@tsconfig/bun": "catalog:",
+    "@types/bun": "catalog:",
+    "typescript": "catalog:"
+  }
+}
