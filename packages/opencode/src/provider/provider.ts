@@ -28,6 +28,7 @@ import { withStatics } from "@/util/schema"
 
 import * as ProviderTransform from "./transform"
 import { ModelID, ProviderID } from "./schema"
+import * as OllamaLocalProvider from "./ollama-local"
 
 const log = Log.create({ service: "provider" })
 
@@ -813,6 +814,7 @@ function custom(dep: CustomDep): Record<string, CustomLoader> {
           },
         },
       }),
+    [OllamaLocalProvider.PROVIDER_ID]: () => OllamaLocalProvider.loader({ env: dep.env }),
   }
 }
 
@@ -1073,6 +1075,14 @@ const layer: Layer.Layer<
         const modelsDev = yield* Effect.promise(() => ModelsDev.get())
         const database = mapValues(modelsDev, fromModelsDevProvider)
 
+        // Arthas: register `ollama-local` as a synthetic database entry so the
+        // custom loader below can attach to it without us needing an entry on
+        // models.dev. See packages/opencode/src/provider/ollama-local for the
+        // shape and rules.
+        if (!database[OllamaLocalProvider.PROVIDER_ID]) {
+          database[OllamaLocalProvider.PROVIDER_ID] = fromModelsDevProvider(OllamaLocalProvider.databaseEntry)
+        }
+
         const providers: Record<ProviderID, Info> = {} as Record<ProviderID, Info>
         const languages = new Map<string, LanguageModelV3>()
         const modelLoaders: {
@@ -1307,6 +1317,22 @@ const layer: Layer.Layer<
           })
         }
 
+        const ollamaLocal = ProviderID.make(OllamaLocalProvider.PROVIDER_ID)
+        if (discoveryLoaders[ollamaLocal] && providers[ollamaLocal] && isProviderAllowed(ollamaLocal)) {
+          yield* Effect.promise(async () => {
+            try {
+              const discovered = await discoveryLoaders[ollamaLocal]()
+              for (const [modelID, model] of Object.entries(discovered)) {
+                if (!providers[ollamaLocal].models[modelID]) {
+                  providers[ollamaLocal].models[modelID] = model
+                }
+              }
+            } catch (e) {
+              log.warn("state discovery error", { id: OllamaLocalProvider.PROVIDER_ID, error: e })
+            }
+          })
+        }
+
         for (const hook of plugins) {
           const p = hook.provider
           const models = p?.models
@@ -1373,8 +1399,14 @@ const layer: Layer.Layer<
           }
 
           if (Object.keys(provider.models).length === 0) {
-            delete providers[providerID]
-            continue
+            // Arthas: ollama-local is allowed to stay registered with zero
+            // models when the local daemon is unreachable, so commands like
+            // `models ollama-local` report an empty list rather than
+            // "provider not found". See packages/opencode/src/provider/ollama-local.
+            if (providerID !== OllamaLocalProvider.PROVIDER_ID) {
+              delete providers[providerID]
+              continue
+            }
           }
 
           log.info("found", { providerID })
