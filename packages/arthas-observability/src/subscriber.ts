@@ -25,10 +25,12 @@
 //
 // ── Fields we cannot fully populate from current opencode events ────────────
 //
-//   route               — opencode does not yet emit a routing decision on the
-//                         bus. Defaulted to "cloud" until triage-engineer
-//                         publishes a `triage.decision` bus event we can
-//                         correlate by sessionID.
+//   route               — derived from providerID: "ollama-local" → "local",
+//                         everything else → "cloud". This is correct today
+//                         because routing decisions in arthas v0 are 1:1 with
+//                         provider selection. When triage-engineer adds a real
+//                         classifier emitting `triage.decision`, swap to
+//                         consuming that event for richer reason/confidence.
 //   provider (literal)  — opencode's providerID is a free-form string; we map
 //                         the well-known IDs and fall back to "openai" for
 //                         unknown providers (see coerceProvider). TODO once
@@ -163,15 +165,18 @@ const hasEndedTime = (state: ToolState): state is ToolStateCompleted | ToolState
 export interface SubscriberOptions {
   readonly bus: BusLike
   readonly logFor: (sessionId: string) => EventLog
-  // TODO(obs): replace with a per-session triage decision once
-  // triage-engineer publishes a `triage.decision` bus event.
-  readonly defaultRoute?: Route
+  // Optional override for route derivation. Default: "ollama-local" → "local",
+  // everything else → "cloud". Will be replaced/augmented when a real
+  // `triage.decision` bus event is published per-turn.
+  readonly routeFor?: (provider: Provider) => Route
 }
+
+const defaultRouteFor = (provider: Provider): Route => (provider === "ollama-local" ? "local" : "cloud")
 
 export class Subscriber {
   readonly #bus: BusLike
   readonly #logFor: (sessionId: string) => EventLog
-  readonly #defaultRoute: Route
+  readonly #routeFor: (provider: Provider) => Route
   readonly #toolAccum = new Map<string, ToolCallAccumulator>()
   readonly #unsubscribers: Array<() => void> = []
   #started = false
@@ -179,7 +184,7 @@ export class Subscriber {
   constructor(options: SubscriberOptions) {
     this.#bus = options.bus
     this.#logFor = options.logFor
-    this.#defaultRoute = options.defaultRoute ?? "cloud"
+    this.#routeFor = options.routeFor ?? defaultRouteFor
   }
 
   start(): () => void {
@@ -237,12 +242,13 @@ export class Subscriber {
     const completed = info.time.completed
     if (completed === undefined) return
     const accum = this.#toolAccum.get(payload.sessionID)
+    const provider = coerceProvider(info.providerID)
     const record = ObservabilityRecord.create({
       turnId: info.id,
       sessionId: info.sessionID,
       model: info.modelID,
-      provider: coerceProvider(info.providerID),
-      route: this.#defaultRoute,
+      provider,
+      route: this.#routeFor(provider),
       inputTokens: info.tokens.input,
       outputTokens: info.tokens.output,
       cacheReadInputTokens: info.tokens.cache.read,
