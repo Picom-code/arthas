@@ -103,6 +103,15 @@
         "typescript": "catalog:",
       },
     },
+    "packages/arthas-triage": {
+      "name": "arthas-triage",
+      "version": "0.0.0",
+      "devDependencies": {
+        "@tsconfig/bun": "catalog:",
+        "@types/bun": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "packages/console/app": {
       "name": "@opencode-ai/console-app",
       "version": "1.14.29",
@@ -2612,6 +2621,8 @@
     "arthas-observability": ["arthas-observability@workspace:packages/arthas-observability"],
 
     "arthas-theme": ["arthas-theme@workspace:packages/arthas-theme"],
+
+    "arthas-triage": ["arthas-triage@workspace:packages/arthas-triage"],
 
     "assert-plus": ["assert-plus@1.0.0", "", {}, "sha512-NfJ4UzBCcQGLDlQq7nHxH+tv3kyZ0hHQqF5BO6J7tNJeP5do1llPr8dZ8zHonfhAu0PHAdMkSo+8o0wxg9lZWw=="],
 
