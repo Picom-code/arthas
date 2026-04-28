@@ -59,8 +59,7 @@ export function arthasLogo(pad?: string) {
   if (!process.stdout.isTTY && !process.stderr.isTTY) {
     const result: string[] = []
     for (const row of lines) {
-      if (row.length === 0) continue
-      if (pad) result.push(pad)
+      if (pad && row.length > 0) result.push(pad)
       result.push(row)
       result.push(EOL)
     }
@@ -71,7 +70,10 @@ export function arthasLogo(pad?: string) {
   const reset = "\x1b[0m"
   const result: string[] = []
   for (const row of lines) {
-    if (row.length === 0) continue
+    if (row.length === 0) {
+      result.push(EOL)
+      continue
+    }
     if (pad) result.push(pad)
     result.push(fg, row, reset, EOL)
   }
