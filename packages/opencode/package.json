@@ -18,6 +18,7 @@
     "db": "bun drizzle-kit"
   },
   "bin": {
+    "arthas": "./bin/opencode",
     "opencode": "./bin/opencode"
   },
   "exports": {

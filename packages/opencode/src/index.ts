@@ -39,6 +39,7 @@ import { Database } from "@/storage/db"
 import { errorMessage } from "./util/error"
 import { PluginCommand } from "./cli/cmd/plug"
 import { Heap } from "./cli/heap"
+import { startObservability } from "./observability"
 import { drizzle } from "drizzle-orm/bun-sqlite"
 import { ensureProcessMetadata } from "@opencode-ai/core/util/opencode-process"
 
@@ -86,7 +87,7 @@ function withKnightAlias<T, U>(module: CommandModule<T, U>): CommandModule<T, U>
 
 const cli = yargs(args)
   .parserConfiguration({ "populate--": true })
-  .scriptName("opencode")
+  .scriptName("arthas")
   .wrap(100)
   .help("help", "show help")
   .alias("help", "h")
@@ -121,6 +122,7 @@ const cli = yargs(args)
     })
 
     Heap.start()
+    startObservability()
 
     process.env.AGENT = "1"
     process.env.OPENCODE = "1"
