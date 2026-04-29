@@ -1,0 +1,25 @@
+{
+  "name": "Arthas",
+  "short_name": "Arthas",
+  "description": "Knight-themed AI agent harness — continue your quest from any device.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0D7A7A",
+  "background_color": "#0F1419",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
