@@ -46,6 +46,4 @@ export const welcomeBanner = [
   "              | || ||",
   "            __|_d|_|b__",
   "",
-  "  ⚔  the knight-themed agent harness",
-  "",
 ].join("\n")

@@ -1,26 +1,19 @@
-import { STRINGS } from "arthas-theme/strings"
-
 /**
- * Arthas wordmark + tagline.
+ * Arthas wordmark.
  *
- * Renders a compact SVG knight badge plus the wordmark in a serif-flavored
- * monospace stack — readable on a phone, themed on desktop.
+ * Compact SVG knight badge plus the wordmark in a serif-flavored monospace
+ * stack — readable on a phone, themed on desktop.
  */
 export function Banner() {
   return (
     <header className="flex items-center gap-3">
       <KnightBadge />
-      <div className="flex flex-col">
-        <span
-          className="font-mono text-2xl font-bold tracking-tight text-arthas-text"
-          aria-label="Arthas"
-        >
-          Arthas
-        </span>
-        <span className="text-xs text-arthas-muted">
-          {STRINGS.welcomeTagline} {/* the only Frostmourne reference, by design */}
-        </span>
-      </div>
+      <span
+        className="font-mono text-2xl font-bold tracking-tight text-arthas-text"
+        aria-label="Arthas"
+      >
+        Arthas
+      </span>
     </header>
   )
 }
