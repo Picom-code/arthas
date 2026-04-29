@@ -32,9 +32,10 @@
 //                         classifier emitting `triage.decision`, swap to
 //                         consuming that event for richer reason/confidence.
 //   provider (literal)  — opencode's providerID is a free-form string; we map
-//                         the well-known IDs and fall back to "openai" for
-//                         unknown providers (see coerceProvider). TODO once
-//                         the Provider literal in record.ts is widened.
+//                         the well-known IDs to the Provider literal in
+//                         record.ts and surface anything else as "other"
+//                         (see coerceProvider). Adding a new opencode provider
+//                         requires extending Provider + PROVIDER_ALIASES.
 //   turnId              — opencode lacks a stable per-turn identifier on the
 //                         bus payload, so we use the assistant message id.
 //
@@ -129,9 +130,30 @@ const KNOWN_PROVIDERS: ReadonlyArray<Provider> = [
   "openrouter",
   "bedrock",
   "vertex",
+  "google",
+  "groq",
+  "mistral",
+  "cohere",
+  "perplexity",
+  "xai",
+  "azure",
+  "cerebras",
+  "deepinfra",
+  "togetherai",
+  "alibaba",
+  "vercel",
+  "gateway",
+  "copilot",
+  "gitlab",
+  "venice",
+  "poe",
+  "deepseek",
   "ollama-local",
+  "other",
 ]
 
+// Maps opencode's free-form providerID to our typed Provider literal.
+// Includes upstream variant strings (e.g. "amazon-bedrock", "google-vertex").
 const PROVIDER_ALIASES: Record<string, Provider> = {
   "anthropic": "anthropic",
   "openai": "openai",
@@ -141,18 +163,37 @@ const PROVIDER_ALIASES: Record<string, Provider> = {
   "vertex": "vertex",
   "google-vertex": "vertex",
   "google-vertex-anthropic": "vertex",
+  "google": "google",
+  "groq": "groq",
+  "mistral": "mistral",
+  "cohere": "cohere",
+  "perplexity": "perplexity",
+  "xai": "xai",
+  "azure": "azure",
+  "cerebras": "cerebras",
+  "deepinfra": "deepinfra",
+  "togetherai": "togetherai",
+  "together": "togetherai",
+  "alibaba": "alibaba",
+  "vercel": "vercel",
+  "gateway": "gateway",
+  "ai-gateway": "gateway",
+  "copilot": "copilot",
+  "github-copilot": "copilot",
+  "gitlab": "gitlab",
+  "venice": "venice",
+  "poe": "poe",
+  "deepseek": "deepseek",
   "ollama": "ollama-local",
   "ollama-local": "ollama-local",
 }
 
-// TODO(obs): widen Provider literal in record.ts so unknown providerIDs
-//            (e.g. groq, mistral, cohere) surface as themselves rather than
-//            collapsing onto "openai".
+// Unknown providerIDs surface as "other" so spend isn't silently misattributed.
 const coerceProvider = (providerID: string): Provider => {
   const aliased = PROVIDER_ALIASES[providerID]
   if (aliased) return aliased
   if ((KNOWN_PROVIDERS as ReadonlyArray<string>).includes(providerID)) return providerID as Provider
-  return "openai"
+  return "other"
 }
 
 const isAssistantInfo = (info: AssistantInfo | UserInfo): info is AssistantInfo => info.role === "assistant"
@@ -253,9 +294,10 @@ export class Subscriber {
       outputTokens: info.tokens.output,
       cacheReadInputTokens: info.tokens.cache.read,
       cacheCreationInputTokens: info.tokens.cache.write,
-      // TODO(obs): derive cost from token counts × model pricing when opencode
-      // surfaces a per-turn cost of 0; for now trust info.cost (already $USD).
-      // (subscriber.ts:onMessageUpdated)
+      // Trust opencode's info.cost ($USD). Some providers report 0 (e.g. when
+      // opencode hasn't priced the model); deriving cost client-side from
+      // token counts × pricing is fragile (drift) and not done here. The
+      // observed value is whatever opencode publishes on the bus.
       costUsd: info.cost,
       latencyMs: Math.max(0, completed - info.time.created),
       toolCallCount: accum?.count ?? 0,

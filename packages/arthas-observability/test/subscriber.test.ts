@@ -157,7 +157,7 @@ test("Subscriber ignores user messages and assistant messages without completed 
   sub.stop()
 })
 
-test("Subscriber maps unknown providerID to openai fallback", async () => {
+test("Subscriber maps unknown providerID to 'other' (no silent misattribution)", async () => {
   const dir = await newTempDir()
   const { bus, emit } = makeFakeBus()
   const sub = new Subscriber({
@@ -183,7 +183,7 @@ test("Subscriber maps unknown providerID to openai fallback", async () => {
   await new Promise((r) => setTimeout(r, 25))
   const lines = (await readFile(join(dir, "sess_3.events.jsonl"), "utf8")).trim().split("\n")
   const record = JSON.parse(lines[0]!) as Record<string, unknown>
-  expect(record.provider).toBe("openai")
+  expect(record.provider).toBe("other")
 
   sub.stop()
 })

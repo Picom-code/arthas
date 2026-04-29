@@ -1,7 +1,36 @@
 import * as DateTime from "effect/DateTime"
 import { Schema } from "effect"
 
-export const Provider = Schema.Literals(["anthropic", "openai", "openrouter", "bedrock", "vertex", "ollama-local"])
+// Every provider opencode ships with as of fork point. "other" catches
+// providers added upstream after this list was last refreshed so unknown IDs
+// surface honestly instead of silently misattributing spend to "openai".
+export const Provider = Schema.Literals([
+  "anthropic",
+  "openai",
+  "openrouter",
+  "bedrock",
+  "vertex",
+  "google",
+  "groq",
+  "mistral",
+  "cohere",
+  "perplexity",
+  "xai",
+  "azure",
+  "cerebras",
+  "deepinfra",
+  "togetherai",
+  "alibaba",
+  "vercel",
+  "gateway",
+  "copilot",
+  "gitlab",
+  "venice",
+  "poe",
+  "deepseek",
+  "ollama-local",
+  "other",
+])
 export type Provider = Schema.Schema.Type<typeof Provider>
 
 export const Route = Schema.Literals(["cloud", "local"])
