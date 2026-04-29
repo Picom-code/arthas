@@ -73,7 +73,7 @@ const handleCloud = async (config: CloudConfig): Promise<OnboardingResult> => {
   const cred: ApiCredential = { type: "api", key }
   await writeCredential(config.id, cred)
   log.success(STRINGS.authReady)
-  outro(`The vault is sealed. Try: arthas crusade "hello"`)
+  outro(`Done. Try: arthas crusade "hello"`)
   return { provider: config.id, configured: true }
 }
 
@@ -95,7 +95,7 @@ const handleOllama = async (): Promise<OnboardingResult> => {
 }
 
 const handleDefer = (): OnboardingResult => {
-  log.info("No vows taken. When you're ready, run `arthas onboard` or `arthas providers login`.")
+  log.info("No provider configured. Run `arthas onboard` or `arthas providers login` when you're ready.")
   log.info(STRINGS.authMissing)
   outro(STRINGS.exitFarewell)
   return { provider: "", configured: false }
@@ -121,10 +121,10 @@ export async function runOnboarding(opts?: { skipIfConfigured?: boolean }): Prom
   process.stderr.write(welcomeBanner)
   process.stderr.write("\n")
 
-  intro(`${STRINGS.welcomeLine} ${STRINGS.welcomeTagline}`)
+  intro(STRINGS.welcomeLine)
 
   const choice = await select<CloudProviderID | "ollama" | "later">({
-    message: "Bind a provider to begin.",
+    message: "Pick a provider.",
     options: [
       { value: "anthropic", label: "Anthropic", hint: "Claude — recommended" },
       { value: "openai", label: "OpenAI", hint: "GPT family" },

@@ -1,18 +1,18 @@
 /**
  * Branded copy used at well-defined surfaces in the CLI.
  *
- * Keep voice subtle. Frostmourne reference exists in exactly one place
- * (the welcome screen tagline) — do NOT propagate it into errors or
- * everyday status messages.
+ * Keep voice neutral. The brand lives in the name, the figlet, the knight
+ * scene, the teal palette, and the optional command aliases (crusade, kneel,
+ * etc.). Words don't need to do double duty — over-the-top fantasy copy gets
+ * old fast.
  */
 export const STRINGS = {
-  welcomeLine: "Welcome, champion.",
-  welcomeTagline: "Frostmourne hungers.",
-  helpHeader: "Arthas — knight-themed AI agent harness.",
-  promptHint: "Type a quest, or /help for the codex.",
-  exitFarewell: "Until next dawn.",
-  authReady: "The vault is sealed. Your keys are safe.",
-  authMissing: "No vows on file. Run `arthas kneel` to bind a provider.",
+  welcomeLine: "Welcome to Arthas.",
+  helpHeader: "Arthas — AI coding agent.",
+  promptHint: "Type a message, or /help for commands.",
+  exitFarewell: "Goodbye.",
+  authReady: "Credentials stored.",
+  authMissing: "No credentials configured. Run `arthas onboard` to set up a provider.",
 } as const
 
 export type StringKey = keyof typeof STRINGS

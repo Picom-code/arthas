@@ -5,9 +5,7 @@
 
 ---
 
-> ⚔️ **Frostmourne hungers...**
->
-> Arthas is a personal-use first, distributable later AI agent CLI. Forked from [sst/opencode](https://github.com/sst/opencode) — see [ATTRIBUTION.md](./ATTRIBUTION.md). Differentiators:
+Arthas is a personal-use first, distributable later AI agent CLI. Forked from [sst/opencode](https://github.com/sst/opencode) — see [ATTRIBUTION.md](./ATTRIBUTION.md). Differentiators:
 >
 > 1. **Cross-device chat continuity** — start a conversation in your terminal, SSH into a GPU box and continue it, then resume from your phone. Cloud sync is opt-in.
 > 2. **Heavy observability** — live token / cost / cache-hit / tool-latency dashboard, structured JSONL event logs, optional OTLP export, replay-from-event-N debugging.

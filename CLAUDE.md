@@ -51,7 +51,7 @@ Arthas-specific types (observability records, sync state, knight settings) live 
 - Commands ship with knight aliases: `summon` (chat), `crusade` (run), `kneel` (login), `vault` (keys/settings), `scroll` (history/search), `tome` (tools/diagnostics). Vanilla aliases must always work.
 - **Tool names stay vanilla** (`Read`, `Write`, `Bash`). Theming MCP-facing tool names breaks model calling.
 - Palette: teal `#0D7A7A` primary, slate `#0F1419` bg, bone-white `#F0F9F9` text. Errors red, warnings amber, success sage.
-- Subtle voice. "Frostmourne hungers" once on the welcome screen, not in every error.
+- **Voice rule: neutral.** The brand lives in the name, the figlet, the knight scene, the teal palette, and the optional command aliases (`crusade`, `kneel`). User-facing copy should not be themed — over-the-top fantasy lines ("Frostmourne hungers", "Welcome champion", "vows", "the codex", "the vault is sealed") were tried and felt cringe; they're banned. "Welcome to Arthas." is the ceiling.
 
 ## Parallel work model
 
