@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+/*
+ * Tailwind v4 — define the canonical Arthas palette as CSS variables.
+ * Mirrors arthas-theme/palette so utilities like `text-arthas-text`
+ * resolve identically on every surface.
+ */
+@theme {
+  --color-arthas-primary: #0d7a7a;
+  --color-arthas-bg: #0f1419;
+  --color-arthas-text: #f0f9f9;
+  --color-arthas-muted: #64748b;
+  --color-arthas-error: #ff6b6b;
+  --color-arthas-warning: #ffd166;
+  --color-arthas-success: #52b788;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, "JetBrains Mono", monospace;
+}
+
+:root {
+  color-scheme: dark;
+  background-color: var(--color-arthas-bg);
+  color: var(--color-arthas-text);
+}
+
+html,
+body {
+  min-height: 100dvh;
+  background-color: var(--color-arthas-bg);
+  color: var(--color-arthas-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+}
